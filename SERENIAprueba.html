@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f8fafc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="La Rústica">
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTGEgUlx1MDBmYXN0aWNhIC0gR2VzdGlcdTAwZjNuIiwic2hvcnRfbmFtZSI6IkxhIFJcdTAwZmFzdGljYSIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZjhmYWZjIiwidGhlbWVfY29sb3IiOiIjZjhmYWZjIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1Ua3lJaUJvWldsbmFIUTlJakU1TWlJZ2RtbGxkMEp2ZUQwaU1DQXdJREkwSURJMElpQm1hV3hzUFNKdWIyNWxJaUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lQanh5WldOMElIZHBaSFJvUFNJeE9USWlJR2hsYVdkb2REMGlNVGt5SWlCeWVEMGlNalFpSUdacGJHdzlJaU0yTXpZMlpqRWlMejQ4Y0dGMGFDQmtQU0pOT0NBM1ZqTnRPQ0EwVmpOdExUa2dPR2d4TUUwMUlESXhhREUwWVRJZ01pQXdJREF3TWkweVZqZGhNaUF5SURBZ01EQXRNaTB5U0RWaE1pQXlJREFnTURBdE1pQXlkakV5WVRJZ01pQXdJREF3TWlBeWVpSWdjM1J5YjJ0bFBTSjNhR2wwWlNJZ2MzUnliMnRsTFhkcFpIUm9QU0l5SWlCemRISnZhMlV0YkdsdVpXTmhjRDBpY205MWJtUWlJSE4wY205clpTMXNhVzVsYW05cGJqMGljbTkxYm1RaUx6NDhMM04yWno0PSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+<title>La Rústica - Gestión</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; overflow: hidden; height: 100dvh; width: 100vw; }
+.no-scrollbar::-webkit-scrollbar { height: 3px; width: 3px; }
+.no-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.no-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+.no-scrollbar { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+.screen { display: none; height: 100dvh; flex-direction: column; }
+.screen.active { display: flex; }
+.timeline-wrap { display: flex; height: calc(100dvh - 104px); border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin: 0 10px 10px; }
+.timeline-sidebar { width: 90px; flex-shrink: 0; border-right: 1px solid #e2e8f0; background: #fff; z-index: 10; display: flex; flex-direction: column; }
+.timeline-scroll { flex: 1; overflow: auto; position: relative; background: #fff; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.timeline-grid { display: flex; flex-direction: column; min-width: max-content; }
+.header-row { display: flex; height: 36px; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 5; background: #f1f5f9; }
+.day-header { width: 44px; flex-shrink: 0; text-align: center; padding: 2px 0; font-size: 0.6rem; border-right: 1px solid #e2e8f0; color: #64748b; font-weight: 500; line-height: 1.1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.day-header.weekend { color: #94a3b8; background: #f8fafc; }
+.day-header.today { color: #4f46e5; font-weight: 700; background: #eef2ff; box-shadow: inset 0 -2px 0 0 #6366f1; }
+.day-header .month-badge { font-size: 0.45rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.9; background: rgba(99,102,241,0.12); color: #4f46e5; padding: 1px 3px; border-radius: 3px; margin-top: 1px; font-weight: 600; }
+.sidebar-header { height: 36px; display: flex; align-items: center; padding: 0 8px; font-size: 0.6rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid #e2e8f0; background: #f8fafc; position: sticky; top: 0; z-index: 5; }
+.sidebar-row { height: 46px; display: flex; align-items: center; padding: 0 6px; font-weight: 600; font-size: 0.72rem; color: #334155; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.15s; flex-shrink: 0; user-select: none; -webkit-user-select: none; line-height: 1.2; position: relative; overflow: hidden; }
+.sidebar-row:hover { background: #f8fafc; }
+.sidebar-row:active { background: #eef2ff; }
+.timeline-row { display: flex; height: 46px; border-bottom: 1px solid #e2e8f0; position: relative; }
+.timeline-row:nth-child(even) { background: #f1f5f9; }
+.timeline-row:nth-child(even) .timeline-cell { background: #f1f5f9; }
+.timeline-row:nth-child(even) .timeline-cell.weekend { background: #e2e7f0; }
+.timeline-cell { width: 44px; flex-shrink: 0; border-right: 1px solid #e2e8f0; position: relative; cursor: pointer; }
+.timeline-cell:hover { background: rgba(99, 102, 241, 0.06) !important; }
+.timeline-cell.weekend { background: #fafbfc; }
+.reservation-block { position: absolute; top: 3px; height: 38px; border-radius: 5px; font-size: 0.72rem; font-weight: 600; color: white; overflow: hidden; white-space: nowrap; cursor: pointer; z-index: 30; box-shadow: 0 1px 3px rgba(0,0,0,0.12); display: flex; flex-direction: column; justify-content: center; padding: 0 8px; line-height: 1.25; transition: transform 0.1s, box-shadow 0.15s; }
+.reservation-block:active { transform: scale(0.985); }
+.reservation-block:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.18); z-index: 40; }
+.res-block-checkout { clip-path: polygon(0% 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%); padding-right: 20px; }
+.res-block-checkin { clip-path: polygon(16px 0%, 100% 0%, 100% 100%, 0% 100%); padding-left: 22px; }
+.res-block-both { clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%); padding-left: 22px; padding-right: 20px; }
+.res-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 0.72rem; }
+.res-monto { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; font-size: 0.62rem; opacity: 0.9; }
+.modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-content { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; transform: translateY(16px) scale(0.97); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
+.modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+input, select, textarea { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; color: #334155; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; font-family: 'Inter', sans-serif; }
+input:focus, select:focus, textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.nav-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 9px; background: #fff; border: 1px solid #e2e8f0; color: #64748b; transition: all 0.15s; cursor: pointer; }
+.nav-btn:active { background: #f1f5f9; color: #334155; }
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); z-index: 200; padding: 10px 22px; border-radius: 12px; background: #1e293b; color: #fff; font-weight: 500; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.cell-tap { animation: tapFlash 0.25s ease-out; }
+@keyframes tapFlash { 0% { background: rgba(99, 102, 241, 0.15); } 100% { background: transparent; } }
+.legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.loading-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(248,250,252,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; transition: opacity 0.3s; }
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #6366f1; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.crud-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.crud-table th { text-align: left; padding: 10px 12px; font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e2e8f0; background: #f8fafc; position: sticky; top: 0; }
+.crud-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+.crud-table tr:active { background: #f8fafc; }
+.crud-table tr:hover { background: #f8fafc; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 6px 0 calc(6px + env(safe-area-inset-bottom)); z-index: 50; }
+.bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 0.6rem; font-weight: 500; transition: color 0.15s; }
+.bottom-nav button.active { color: #6366f1; }
+.bottom-nav button svg { width: 20px; height: 20px; }
+.config-screen { flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+@media (orientation: landscape) and (max-height: 500px) {
+  .timeline-wrap { height: calc(100dvh - 100px); margin: 0 8px 8px; border-radius: 12px; }
+  .timeline-sidebar { width: 80px; }
+  .day-header { width: 38px; font-size: 0.55rem; }
+  .timeline-cell { width: 38px; }
+  .sidebar-header { height: 32px; }
+  .sidebar-row { height: 40px; font-size: 0.68rem; padding: 0 5px; }
+  .timeline-row { height: 40px; }
+  .reservation-block { height: 32px; top: 3px; font-size: 0.65rem; padding: 0 7px; z-index: 30; }
+  .res-block-checkout { clip-path: polygon(0% 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); padding-right: 16px; }
+  .res-block-checkin { clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 0% 100%); padding-left: 18px; }
+  .res-block-both { clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%); padding-left: 18px; padding-right: 16px; }
+  .res-name { font-size: 0.65rem; }
+  .res-monto { font-size: 0.58rem; }
+  .header-row { height: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <p style="color:#64748b;font-size:0.85rem;font-weight:500;">Cargando datos...</p>
+</div>
+
+<!-- ==================== PANTALLA CONFIGURACION ==================== -->
+<div class="screen config-screen" id="screen-config">
+  <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 4px 12px rgba(99,102,241,0.25);">
+    <svg width="32" height="32" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+  </div>
+  <h1 style="font-size:1.3rem;font-weight:700;color:#1e293b;margin-bottom:8px;">La Rústica</h1>
+  <p style="color:#64748b;font-size:0.9rem;margin-bottom:24px;max-width:320px;">Pegá la URL de tu Google Apps Script para conectar la app con tu hoja de calculo.</p>
+  <div style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px;">
+    <div>
+      <label style="display:block;font-size:0.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;text-align:left;">URL de la API (Apps Script)</label>
+      <input type="text" id="config-url" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:0.85rem;">
+    </div>
+    <div id="config-error" style="color:#ef4444;font-size:0.8rem;display:none;text-align:left;"></div>
+    <button onclick="app.saveConfig()" style="width:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:12px;border-radius:12px;border:none;cursor:pointer;font-size:0.95rem;box-shadow:0 2px 8px rgba(99,102,241,0.25);">Conectar</button>
+    <p style="font-size:0.7rem;color:#94a3b8;margin-top:8px;">La URL se guarda solo en este navegador (localStorage).</p>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA GANTT ==================== -->
+<div class="screen" id="screen-gantt">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+        <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);flex-shrink:0;">
+          <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <div style="min-width:0;">
+          <h1 style="font-weight:700;color:#1e293b;font-size:0.88rem;line-height:1.2;">Calendario</h1>
+          <p style="font-size:0.65rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="header-sub">Desliza para navegar</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+        <button onclick="app.scrollToToday()" class="nav-btn" title="Hoy"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></button>
+        <button onclick="app.prevPage()" class="nav-btn"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
+        <button onclick="app.nextPage()" class="nav-btn"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></button>
+        <button onclick="app.openModal()" style="margin-left:4px;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);border:none;cursor:pointer;flex-shrink:0;"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <div style="padding-top:50px;height:100dvh;box-sizing:border-box;">
+    <div class="timeline-wrap">
+      <div class="timeline-sidebar">
+        <div id="sidebar-rows" style="overflow-y:auto;flex:1;" class="no-scrollbar">
+          <div class="sidebar-header">Cabana</div>
+        </div>
+      </div>
+      <div class="timeline-scroll no-scrollbar" id="timeline-scroll">
+        <div class="timeline-grid" id="timeline-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div style="position:fixed;bottom:56px;left:0;right:0;z-index:40;display:flex;justify-content:center;pointer-events:none;">
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:4px 12px;display:flex;align-items:center;gap:10px;font-size:0.62rem;color:#64748b;box-shadow:0 1px 4px rgba(0,0,0,0.05);pointer-events:auto;">
+      <span style="display:flex;align-items:center;gap:3px;"><span class="legend-dot" style="background:#ef4444;"></span> Sin sena</span>
+      <span style="display:flex;align-items:center;gap:3px;"><span class="legend-dot" style="background:#f59e0b;"></span> Con sena</span>
+      <span style="display:flex;align-items:center;gap:3px;"><span class="legend-dot" style="background:#22c55e;"></span> Pagado</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA CLIENTES ==================== -->
+<div class="screen" id="screen-clientes">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <h1 style="font-weight:700;color:#1e293b;font-size:1rem;">Clientes</h1>
+      <button onclick="app.openClienteModal()" style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);border:none;cursor:pointer;"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+    </div>
+  </header>
+  <div style="padding-top:56px;flex:1;overflow:auto;" class="no-scrollbar">
+    <div style="padding:12px;">
+      <input type="text" id="search-clientes" placeholder="Buscar cliente..." oninput="app.filterClientes()" style="margin-bottom:12px;">
+      <div id="clientes-list" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA CABAÑAS ==================== -->
+<div class="screen" id="screen-cabanas">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <h1 style="font-weight:700;color:#1e293b;font-size:1rem;">Cabanas</h1>
+      <button onclick="app.openCabanaModal()" style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);border:none;cursor:pointer;"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+    </div>
+  </header>
+  <div style="padding-top:56px;flex:1;overflow:auto;" class="no-scrollbar">
+    <div style="padding:12px;">
+      <div id="cabanas-list" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA PRECIOS ==================== -->
+<div class="screen" id="screen-precios">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <h1 style="font-weight:700;color:#1e293b;font-size:1rem;">Precios</h1>
+      <button onclick="app.openPrecioModal()" style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);border:none;cursor:pointer;"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+    </div>
+  </header>
+  <div style="padding-top:56px;flex:1;overflow:auto;" class="no-scrollbar">
+    <div style="padding:12px;">
+      <div id="precios-list" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA PAGOS ==================== -->
+<div class="screen" id="screen-pagos">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <h1 style="font-weight:700;color:#1e293b;font-size:1rem;">Pagos / Senas</h1>
+      <button onclick="app.openPagoModal()" style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(99,102,241,0.25);border:none;cursor:pointer;"><svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button>
+    </div>
+  </header>
+  <div style="padding-top:56px;flex:1;overflow:auto;" class="no-scrollbar">
+    <div style="padding:12px;">
+      <div id="pagos-list" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANTALLA RESUMEN ==================== -->
+<div class="screen" id="screen-resumen">
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;background:#fff;border-bottom:1px solid #e2e8f0;">
+    <div style="max-width:1400px;margin:0 auto;padding:12px 16px;">
+      <h1 style="font-weight:700;color:#1e293b;font-size:1rem;">Resumen</h1>
+    </div>
+  </header>
+  <div style="padding-top:56px;flex:1;overflow:auto;" class="no-scrollbar">
+    <div style="padding:12px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+          <div style="font-size:0.65rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Ocupación Hoy</div>
+          <div style="font-size:1.5rem;font-weight:700;color:#1e293b;margin-top:4px;" id="res-ocupacion">0%</div>
+          <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;" id="res-ocupacion-sub">0 de 0</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+          <div style="font-size:0.65rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Ingresos Mes</div>
+          <div style="font-size:1.5rem;font-weight:700;color:#16a34a;margin-top:4px;" id="res-ingresos">$0</div>
+          <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;" id="res-ingresos-sub">0 pagos</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+          <div style="font-size:0.65rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Próx. Entradas</div>
+          <div style="font-size:1.5rem;font-weight:700;color:#6366f1;margin-top:4px;" id="res-entradas-count">0</div>
+          <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">Próx. 7 días</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;">
+          <div style="font-size:0.65rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Pagos Pendientes</div>
+          <div style="font-size:1.5rem;font-weight:700;color:#ef4444;margin-top:4px;" id="res-pendientes-count">0</div>
+          <div style="font-size:0.7rem;color:#94a3b8;margin-top:2px;">Sin seña / incompletos</div>
+        </div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:12px;">
+        <div style="padding:12px 14px;border-bottom:1px solid #f1f5f9;font-weight:700;font-size:0.85rem;color:#1e293b;">Próximas Entradas</div>
+        <div id="res-entradas-list"><div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.8rem;">Sin entradas próximas</div></div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:12px;">
+        <div style="padding:12px 14px;border-bottom:1px solid #f1f5f9;font-weight:700;font-size:0.85rem;color:#1e293b;">Salidas de Hoy</div>
+        <div id="res-salidas-list"><div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.8rem;">Sin salidas hoy</div></div>
+      </div>
+
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+        <div style="padding:12px 14px;border-bottom:1px solid #f1f5f9;font-weight:700;font-size:0.85rem;color:#1e293b;">Pagos Pendientes</div>
+        <div id="res-pendientes-list"><div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.8rem;">Todo al día</div></div>
+      </div>
+      <div style="text-align:center;margin-top:24px;padding-bottom:24px;">
+        <button onclick="app.showConfigModal()" style="padding:6px 12px;font-size:0.65rem;color:#cbd5e1;background:transparent;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;opacity:0.6;">⚙️ API</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BOTTOM NAVIGATION ==================== -->
+<nav class="bottom-nav" id="bottom-nav" style="display:none;">
+  <button onclick="app.showScreen('gantt')" id="nav-gantt" class="active"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>Gantt</button>
+  <button onclick="app.showScreen('resumen')" id="nav-resumen"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Resumen</button>
+  <button onclick="app.showScreen('clientes')" id="nav-clientes"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Clientes</button>
+  <button onclick="app.showScreen('cabanas')" id="nav-cabanas"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Cabanas</button>
+  <button onclick="app.showScreen('precios')" id="nav-precios"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Precios</button>
+  <button onclick="app.showScreen('pagos')" id="nav-pagos"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Pagos</button>
+</nav>
+
+<!-- ==================== MODAL RESERVA ==================== -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this) app.closeModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;" id="modal-title">Nueva Reserva</h2>
+        <button onclick="app.closeModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form id="reserva-form" onsubmit="event.preventDefault(); app.saveReserva();" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" id="r-id">
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Cabana</label><select id="r-cabana" required onchange="app.calcularMonto()"></select></div>
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+            <label style="font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Cliente</label>
+            <button type="button" onclick="app.openNuevoClienteInline()" style="font-size:0.65rem;color:#6366f1;background:none;border:none;cursor:pointer;font-weight:600;padding:0;">+ Nuevo Cliente</button>
+          </div>
+          <select id="r-cliente" required></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Entrada</label><input type="date" id="r-inicio" required onchange="app.calcularMonto()"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Salida</label><input type="date" id="r-fin" required onchange="app.calcularMonto()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Huespedes</label><input type="number" id="r-huespedes" min="1" value="1" onchange="app.calcularMonto()"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Origen</label><select id="r-origen"><option value="manual">Manual</option><option value="airbnb">Airbnb</option><option value="booking">Booking</option><option value="whatsapp">WhatsApp</option></select></div>
+        </div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Total $</label><input type="number" id="r-monto" placeholder="0" min="0"></div>
+
+        <!-- SECCION PAGOS -->
+        <div id="r-pagos-section" style="display:none;">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:0.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Pagos de la reserva</span>
+              <span id="r-estado-pago-badge" style="font-size:0.7rem;font-weight:600;padding:2px 8px;border-radius:999px;background:#ef4444;color:#fff;">Sin seña</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:8px;">
+              <span style="color:#64748b;">Pagado: <b id="r-total-pagado" style="color:#334155;">$0</b></span>
+              <span style="color:#64748b;">Falta: <b id="r-saldo-pendiente" style="color:#ef4444;">$0</b></span>
+            </div>
+            <div id="r-lista-pagos" style="max-height:100px;overflow:auto;margin-bottom:8px;font-size:0.75rem;"></div>
+
+            <div style="border-top:1px solid #e2e8f0;padding-top:8px;">
+              <div style="font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Agregar pago</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+                <input type="number" id="r-nuevo-pago-monto" placeholder="Importe $" min="0" style="font-size:0.8rem;padding:8px 10px;">
+                <input type="date" id="r-nuevo-pago-fecha" style="font-size:0.8rem;padding:8px 10px;">
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
+                <select id="r-nuevo-pago-metodo" style="font-size:0.8rem;padding:8px 10px;">
+                  <option value="efectivo">Efectivo</option>
+                  <option value="transferencia">Transferencia</option>
+                  <option value="tarjeta">Tarjeta</option>
+                  <option value="mercadopago">MercadoPago</option>
+                  <option value="otro">Otro</option>
+                </select>
+                <input type="text" id="r-nuevo-pago-notas" placeholder="Notas..." style="font-size:0.8rem;padding:8px 10px;">
+              </div>
+              <button type="button" onclick="app.agregarPagoDesdeReserva()" style="width:100%;background:#f1f5f9;color:#6366f1;font-weight:600;padding:8px;border-radius:8px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.8rem;">+ Agregar pago</button>
+            </div>
+          </div>
+        </div>
+
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Observaciones</label><input type="text" id="r-notas" placeholder="Observaciones..."></div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar</button><button type="button" onclick="app.closeModal()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+        <button type="button" id="btn-eliminar" onclick="app.deleteReserva()" style="width:100%;padding:9px;color:#f43f5e;font-size:0.82rem;font-weight:500;background:transparent;border:none;cursor:pointer;border-radius:8px;display:none;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">Eliminar reserva</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL CABAÑA ==================== -->
+<div class="modal-overlay" id="modal-cabana" onclick="if(event.target===this) app.closeCabanaModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;" id="modal-cabana-title">Nueva Cabana</h2>
+        <button onclick="app.closeCabanaModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form id="cabana-form" onsubmit="event.preventDefault(); app.saveCabana();" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" id="c-id">
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Nombre</label><input type="text" id="c-nombre" required placeholder="Nombre de la cabana"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Max. Pax</label><input type="number" id="c-maxpax" required placeholder="0" min="1"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Color</label><input type="color" id="c-color" value="#10b981" style="width:100%;height:40px;border:none;border-radius:10px;cursor:pointer;padding:0;"></div>
+        </div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Comodidades</label><input type="text" id="c-comodidades" placeholder="WiFi, TV, Aire..."></div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Servicios</label><input type="text" id="c-servicios" placeholder="Desayuno, limpieza..."></div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar</button><button type="button" onclick="app.closeCabanaModal()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+        <button type="button" id="btn-eliminar-cabana" onclick="app.deleteCabana()" style="width:100%;padding:9px;color:#f43f5e;font-size:0.82rem;font-weight:500;background:transparent;border:none;cursor:pointer;border-radius:8px;display:none;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">Eliminar cabana</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL CLIENTE ==================== -->
+<div class="modal-overlay" id="modal-cliente" onclick="if(event.target===this) app.closeClienteModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;" id="modal-cliente-title">Nuevo Cliente</h2>
+        <button onclick="app.closeClienteModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form id="cliente-form" onsubmit="event.preventDefault(); app.saveCliente();" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" id="cl-id">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Nombre</label><input type="text" id="cl-nombre" required placeholder="Juan"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Apellido</label><input type="text" id="cl-apellido" required placeholder="Perez"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Telefono</label><input type="tel" id="cl-telefono" placeholder="+54 9..."></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Email</label><input type="email" id="cl-email" placeholder="email@ejemplo.com"></div>
+        </div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">DNI / Documento</label><input type="text" id="cl-dni" placeholder="12345678"></div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Notas</label><input type="text" id="cl-notas" placeholder="Observaciones..."></div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar</button><button type="button" onclick="app.closeClienteModal()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+        <button type="button" id="btn-eliminar-cliente" onclick="app.deleteCliente()" style="width:100%;padding:9px;color:#f43f5e;font-size:0.82rem;font-weight:500;background:transparent;border:none;cursor:pointer;border-radius:8px;display:none;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">Eliminar cliente</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL PRECIO ==================== -->
+<div class="modal-overlay" id="modal-precio" onclick="if(event.target===this) app.closePrecioModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;" id="modal-precio-title">Nuevo Precio</h2>
+        <button onclick="app.closePrecioModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form id="precio-form" onsubmit="event.preventDefault(); app.savePrecio();" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" id="p-id">
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Cabana</label><select id="p-cabana" required></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Precio por noche $</label><input type="number" id="p-precio-noche" placeholder="0" min="0"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Precio por pax $</label><input type="number" id="p-precio-pax" placeholder="0" min="0"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Vigencia desde</label><input type="date" id="p-vigencia-desde" required></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Vigencia hasta</label><input type="date" id="p-vigencia-hasta"></div>
+        </div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar</button><button type="button" onclick="app.closePrecioModal()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+        <button type="button" id="btn-eliminar-precio" onclick="app.deletePrecio()" style="width:100%;padding:9px;color:#f43f5e;font-size:0.82rem;font-weight:500;background:transparent;border:none;cursor:pointer;border-radius:8px;display:none;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">Eliminar precio</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL PAGO ==================== -->
+<div class="modal-overlay" id="modal-pago" onclick="if(event.target===this) app.closePagoModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;" id="modal-pago-title">Nuevo Pago</h2>
+        <button onclick="app.closePagoModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form id="pago-form" onsubmit="event.preventDefault(); app.savePago();" style="display:flex;flex-direction:column;gap:10px;">
+        <input type="hidden" id="pg-id">
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Reserva</label><select id="pg-reserva" required></select></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Importe $</label><input type="number" id="pg-importe" required placeholder="0" min="0"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Fecha</label><input type="date" id="pg-fecha" required></div>
+        </div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Metodo</label><select id="pg-metodo"><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option><option value="mercadopago">MercadoPago</option><option value="otro">Otro</option></select></div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Notas</label><input type="text" id="pg-notas" placeholder="Observaciones..."></div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar</button><button type="button" onclick="app.closePagoModal()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+        <button type="button" id="btn-eliminar-pago" onclick="app.deletePago()" style="width:100%;padding:9px;color:#f43f5e;font-size:0.82rem;font-weight:500;background:transparent;border:none;cursor:pointer;border-radius:8px;display:none;" onmouseover="this.style.background='#fff1f2'" onmouseout="this.style.background='transparent'">Eliminar pago</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL NUEVO CLIENTE INLINE ==================== -->
+<div class="modal-overlay" id="modal-nuevo-cliente-inline" onclick="if(event.target===this) app.closeNuevoClienteInline()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;">Nuevo Cliente</h2>
+        <button onclick="app.closeNuevoClienteInline()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <form onsubmit="event.preventDefault(); app.saveNuevoClienteInline();" style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Nombre</label><input type="text" id="ncl-nombre" required placeholder="Juan"></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Apellido</label><input type="text" id="ncl-apellido" required placeholder="Perez"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Telefono</label><input type="tel" id="ncl-telefono" placeholder="+54 9..."></div>
+          <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">Email</label><input type="email" id="ncl-email" placeholder="email@ejemplo.com"></div>
+        </div>
+        <div><label style="display:block;font-size:0.6rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;">DNI / Documento</label><input type="text" id="ncl-dni" placeholder="12345678"></div>
+        <div style="display:flex;gap:6px;padding-top:2px;"><button type="submit" style="flex:1;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:10px;border-radius:10px;border:none;cursor:pointer;font-size:0.88rem;box-shadow:0 2px 6px rgba(99,102,241,0.25);">Guardar y seleccionar</button><button type="button" onclick="app.closeNuevoClienteInline()" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;font-size:0.88rem;font-weight:500;">Cancelar</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL CONFIG API OCULTO ==================== -->
+<div class="modal-overlay" id="modal-config-api" onclick="if(event.target===this) app.closeConfigModal()">
+  <div class="modal-content">
+    <div style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <h2 style="font-weight:700;color:#1e293b;font-size:1rem;">Configurar API</h2>
+        <button onclick="app.closeConfigModal()" style="width:28px;height:28px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;color:#64748b;cursor:pointer;"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <label style="display:block;font-size:0.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;text-align:left;">URL de la API (Apps Script)</label>
+          <input type="text" id="config-url-oculto" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:0.85rem;">
+        </div>
+        <div id="config-error-oculto" style="color:#ef4444;font-size:0.8rem;display:none;text-align:left;"></div>
+        <button onclick="app.saveConfigOculto()" style="width:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-weight:600;padding:12px;border-radius:12px;border:none;cursor:pointer;font-size:0.95rem;box-shadow:0 2px 8px rgba(99,102,241,0.25);">Guardar URL</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const HARDCODED_API_URL = ''; // <-- PEGÁ TU URL DE APPS SCRIPT AQUÍ
+let API_URL = localStorage.getItem('larustica_api_url') || '';
+
+const app = {
+  cabanas: [], clientes: [], reservas: [], precios: [], pagos: [],
+  viewStart: null, viewDays: 180, dayWidth: 44,
+  getDayWidth() { return (window.innerHeight < 500 && window.innerWidth > window.innerHeight) ? 38 : 44; },
+  editingId: null, editingCabanaId: null, editingClienteId: null, editingPrecioId: null, editingPagoId: null,
+  lastTap: 0, currentScreen: 'gantt',
+
+  saveConfig() {
+    const url = document.getElementById('config-url').value.trim();
+    if (!url || !url.includes('script.google.com')) {
+      document.getElementById('config-error').textContent = 'Ingresa una URL valida de Apps Script.';
+      document.getElementById('config-error').style.display = 'block'; return;
+    }
+    localStorage.setItem('larustica_api_url', url); API_URL = url;
+    document.getElementById('config-error').style.display = 'none';
+    this.initApp();
+  },
+
+  async apiGet(tabla) {
+    try {
+      const res = await fetch(API_URL + '?tabla=' + encodeURIComponent(tabla));
+      const data = await res.json();
+      return data.success ? data.data : [];
+    } catch (e) {
+      console.error('Error GET', tabla, e);
+      this.showToast('Error de conexion con la API', 'error');
+      return [];
+    }
+  },
+
+  async apiPost(action, tabla, id, data) {
+    try {
+      const body = new URLSearchParams();
+      body.append('action', action); body.append('tabla', tabla);
+      if (id) body.append('id', id);
+      if (data) body.append('data', JSON.stringify(data));
+      const res = await fetch(API_URL, { method: 'POST', body: body });
+      return await res.json();
+    } catch (e) {
+      console.error('Error POST', action, tabla, e);
+      this.showToast('Error al guardar', 'error');
+      return { error: e.message };
+    }
+  },
+
+  async loadAllData() {
+    document.getElementById('loading-overlay').classList.remove('hidden');
+    const [cabanas, clientes, reservas, precios, pagos] = await Promise.all([
+      this.apiGet('cabanas'), this.apiGet('clientes'), this.apiGet('reservas'),
+      this.apiGet('precios'), this.apiGet('pagos')
+    ]);
+    this.cabanas = cabanas; this.clientes = clientes; this.reservas = reservas;
+    this.precios = precios; this.pagos = pagos;
+    document.getElementById('loading-overlay').classList.add('hidden');
+  },
+
+  showScreen(name) {
+    this.currentScreen = name;
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    const navBtn = document.getElementById('nav-' + name);
+    if (navBtn) navBtn.classList.add('active');
+    if (name === 'clientes') this.renderClientes();
+    if (name === 'cabanas') this.renderCabanas();
+    if (name === 'precios') this.renderPrecios();
+    if (name === 'pagos') this.renderPagos();
+    if (name === 'resumen') this.renderResumen();
+    if (name === 'gantt') { setTimeout(() => { this.scrollToToday(); this.updateHeaderMonth(); }, 50); }
+  },
+
+  async initApp() {
+    document.getElementById('screen-config').classList.remove('active');
+    document.getElementById('bottom-nav').style.display = 'flex';
+    await this.loadAllData();
+    this.populateSelects();
+    const today = new Date(); today.setHours(0,0,0,0);
+    this.viewStart = new Date(today); this.viewStart.setDate(today.getDate() - 90);
+    this.render(); this.showScreen('gantt'); this.scrollToToday();
+    this.setupScrollListener(); this.setupScrollSync();
+    window.addEventListener('orientationchange', () => { setTimeout(() => { this.dayWidth = this.getDayWidth(); this.render(); this.scrollToToday(); }, 400); });
+    window.addEventListener('resize', () => { this.dayWidth = this.getDayWidth(); this.render(); setTimeout(() => this.scrollToToday(), 150); });
+  },
+
+  saving: false,
+
+  setLoading(loading) {
+    this.saving = loading;
+    const buttons = document.querySelectorAll('button[type="submit"]');
+    buttons.forEach(btn => {
+      btn.disabled = loading;
+      btn.style.opacity = loading ? '0.6' : '1';
+      btn.style.cursor = loading ? 'not-allowed' : 'pointer';
+      if (loading && !btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
+      if (loading) btn.textContent = 'Guardando...';
+      else if (btn.dataset.originalText) btn.textContent = btn.dataset.originalText;
+    });
+  },
+
+  refreshCurrentScreen() {
+    if (this.currentScreen === 'gantt') this.render();
+    if (this.currentScreen === 'clientes') this.renderClientes();
+    if (this.currentScreen === 'cabanas') this.renderCabanas();
+    if (this.currentScreen === 'precios') this.renderPrecios();
+    if (this.currentScreen === 'pagos') this.renderPagos();
+  },
+
+  init() {
+    if (!API_URL && HARDCODED_API_URL) { API_URL = HARDCODED_API_URL; }
+    if (!API_URL) {
+      document.getElementById('screen-config').classList.add('active');
+      document.getElementById('bottom-nav').style.display = 'none';
+      document.getElementById('loading-overlay').classList.add('hidden');
+    } else { this.initApp(); }
+  },
+
+  setupScrollSync() {
+    const sidebar = document.getElementById('sidebar-rows');
+    const scroll = document.getElementById('timeline-scroll');
+    let syncing = false;
+    sidebar.addEventListener('scroll', () => { if (syncing) return; syncing = true; requestAnimationFrame(() => { scroll.scrollTop = sidebar.scrollTop; syncing = false; }); });
+    scroll.addEventListener('scroll', () => { if (syncing) return; syncing = true; requestAnimationFrame(() => { sidebar.scrollTop = scroll.scrollTop; syncing = false; }); });
+  },
+
+  populateSelects() {
+    const selCab = document.getElementById('r-cabana');
+    selCab.innerHTML = '<option value="">Seleccionar...</option>';
+    this.cabanas.filter(c => c.estado !== 'inactiva').forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.nombre; selCab.appendChild(opt); });
+    const selCli = document.getElementById('r-cliente');
+    selCli.innerHTML = '<option value="">Seleccionar...</option>';
+    this.clientes.forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.apellido + ', ' + c.nombre; selCli.appendChild(opt); });
+    const selPCab = document.getElementById('p-cabana');
+    if (selPCab) { selPCab.innerHTML = '<option value="">Seleccionar...</option>'; this.cabanas.filter(c => c.estado !== 'inactiva').forEach(c => { const opt = document.createElement('option'); opt.value = c.id; opt.textContent = c.nombre; selPCab.appendChild(opt); }); }
+    this.populateReservaSelect();
+  },
+
+  populateReservaSelect() {
+    const selRes = document.getElementById('pg-reserva');
+    if (!selRes) return;
+    selRes.innerHTML = '<option value="">Seleccionar...</option>';
+    this.reservas.filter(r => r.estado !== 'cancelada').sort((a,b) => new Date(b.fecha_entrada) - new Date(a.fecha_entrada)).forEach(r => {
+      const cli = this.clientes.find(c => parseInt(c.id) === parseInt(r.id_clientes));
+      const cab = this.cabanas.find(c => parseInt(c.id) === parseInt(r.id_cabanas));
+      const opt = document.createElement('option'); opt.value = r.id;
+      opt.textContent = (cab ? cab.nombre : '?') + ' - ' + (cli ? cli.apellido : '?') + ' (' + r.fecha_entrada + ')';
+      selRes.appendChild(opt);
+    });
+  },
+
+  setupScrollListener() {
+    const scroll = document.getElementById('timeline-scroll');
+    scroll.addEventListener('scroll', () => { this.updateHeaderMonth(); });
+  },
+
+  updateHeaderMonth() {
+    const scroll = document.getElementById('timeline-scroll');
+    const centerX = scroll.scrollLeft + scroll.clientWidth / 2;
+    const dayIndex = Math.floor(centerX / this.getDayWidth());
+    const centerDate = new Date(this.viewStart); centerDate.setDate(centerDate.getDate() + dayIndex);
+    const monthStr = centerDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+    document.getElementById('header-sub').textContent = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
+  },
+
+  prevPage() { document.getElementById('timeline-scroll').scrollBy({ left: -this.getDayWidth() * 7, behavior: 'smooth' }); },
+  nextPage() { document.getElementById('timeline-scroll').scrollBy({ left: this.getDayWidth() * 7, behavior: 'smooth' }); },
+
+  scrollToToday() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const start = new Date(this.viewStart); start.setHours(0,0,0,0);
+    const diffDays = Math.round((today - start) / (1000 * 60 * 60 * 24));
+    const scroll = document.getElementById('timeline-scroll');
+    scroll.scrollLeft = Math.max(0, diffDays * this.getDayWidth() - scroll.clientWidth / 2 + this.getDayWidth() / 2);
+    this.updateHeaderMonth();
+  },
+
+  fmt(d) { return d.toISOString().split('T')[0]; },
+
+  getReservaColor(reservaId, precioTotal) {
+    const pagosReserva = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(reservaId));
+    const totalPagado = pagosReserva.reduce((sum, p) => sum + (parseFloat(p.importe) || 0), 0);
+    if (totalPagado <= 0) return 'linear-gradient(135deg, #ef4444, #dc2626)';
+    if (totalPagado < parseFloat(precioTotal)) return 'linear-gradient(135deg, #f59e0b, #d97706)';
+    return 'linear-gradient(135deg, #22c55e, #16a34a)';
+  },
+
+  getReservaEstadoPago(reservaId, precioTotal) {
+    const pagosReserva = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(reservaId));
+    const totalPagado = pagosReserva.reduce((sum, p) => sum + (parseFloat(p.importe) || 0), 0);
+    if (totalPagado <= 0) return 'Sin sena';
+    if (totalPagado < parseFloat(precioTotal)) return 'Con sena';
+    return 'Pagado';
+  },
+
+  render() {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const sidebar = document.getElementById('sidebar-rows');
+    const header = sidebar.querySelector('.sidebar-header');
+    sidebar.innerHTML = ''; if (header) sidebar.appendChild(header);
+    this.cabanas.filter(c => c.estado !== 'inactiva').forEach(cab => {
+      const div = document.createElement('div'); div.className = 'sidebar-row';
+      const hex = cab.color || '#6366f1';
+      div.style.background = hex + '10'; div.style.borderLeft = '4px solid ' + hex;
+      div.innerHTML = '<span style="white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word;padding-left:3px;">' + cab.nombre + '</span>';
+      div.addEventListener('dblclick', () => { this.openCabanaModal(cab); });
+      sidebar.appendChild(div);
+    });
+    const grid = document.getElementById('timeline-grid'); grid.innerHTML = '';
+    const headerRow = document.createElement('div'); headerRow.className = 'header-row';
+    for (let i = 0; i < this.viewDays; i++) {
+      const date = new Date(this.viewStart); date.setDate(date.getDate() + i);
+      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+      const isToday = date.getTime() === today.getTime();
+      const isFirstOfMonth = date.getDate() === 1;
+      const cell = document.createElement('div');
+      cell.className = 'day-header ' + (isWeekend ? 'weekend ' : '') + (isToday ? 'today' : '');
+      let monthBadge = '';
+      if (isFirstOfMonth) monthBadge = '<span class="month-badge">' + date.toLocaleDateString('es-AR', { month: 'short' }) + '</span>';
+      cell.innerHTML = '<div style="font-weight:' + (isToday?700:500) + '">' + date.getDate() + '</div><div style="font-size:0.5rem;opacity:0.7">' + ['D','L','M','M','J','V','S'][date.getDay()] + '</div>' + monthBadge;
+      headerRow.appendChild(cell);
+    }
+    grid.appendChild(headerRow);
+    this.cabanas.filter(c => c.estado !== 'inactiva').forEach((cab) => {
+      const row = document.createElement('div'); row.className = 'timeline-row'; row.dataset.cabanaId = cab.id;
+      for (let i = 0; i < this.viewDays; i++) {
+        const date = new Date(this.viewStart); date.setDate(date.getDate() + i);
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        const isToday = date.getTime() === today.getTime();
+        const cell = document.createElement('div');
+        cell.className = 'timeline-cell ' + (isWeekend ? 'weekend' : '');
+        if (isToday) { cell.style.boxShadow = 'inset 0 0 0 1.5px rgba(99,102,241,0.45)'; cell.style.background = 'rgba(99,102,241,0.04)'; cell.style.zIndex = '2'; }
+        const dateStr = this.fmt(date); cell.dataset.date = dateStr; cell.dataset.cabanaId = cab.id;
+        cell.addEventListener('click', (e) => this.handleCellClick(e, dateStr, cab.id));
+        row.appendChild(cell);
+      }
+      const cabReservas = this.reservas.filter(r => parseInt(r.id_cabanas) === parseInt(cab.id) && r.estado !== 'cancelada').sort((a, b) => new Date(a.fecha_entrada) - new Date(b.fecha_entrada));
+      cabReservas.forEach((res) => {
+        const start = new Date(res.fecha_entrada + 'T00:00:00');
+        const end = new Date(res.fecha_salida + 'T00:00:00');
+        const viewEnd = new Date(this.viewStart); viewEnd.setDate(viewEnd.getDate() + this.viewDays); viewEnd.setHours(23,59,59);
+        if (end < this.viewStart || start > viewEnd) return;
+        const msPerDay = 1000 * 60 * 60 * 24;
+        let startOffset = Math.round((start - this.viewStart) / msPerDay);
+        let endOffset = Math.round((end - this.viewStart) / msPerDay);
+        if (startOffset < 0) startOffset = 0;
+        if (endOffset >= this.viewDays) endOffset = this.viewDays - 1;
+        const endVisible = end <= viewEnd && end >= this.viewStart;
+        const hasCheckout = endVisible; const hasCheckin = start >= this.viewStart;
+        let left = startOffset * this.getDayWidth();
+        let width = ((endOffset - startOffset + 1) * this.getDayWidth()) - 1;
+        const gap = 14;
+        if (hasCheckin) { left += gap; width -= gap; }
+        if (hasCheckout) { width -= gap; }
+        if (width < 24) width = 24;
+        const bg = this.getReservaColor(res.id, res.precio_total);
+        let clipClass = 'reservation-block';
+        if (hasCheckout && hasCheckin) clipClass += ' res-block-both';
+        else if (hasCheckout) clipClass += ' res-block-checkout';
+        else if (hasCheckin) clipClass += ' res-block-checkin';
+
+        const block = document.createElement('div');
+        block.className = clipClass;
+        block.dataset.reservaId = res.id;
+        block.style.cssText = 'left: ' + (left + 0.5) + 'px; width: ' + width + 'px; background: ' + bg + ';';
+
+        const cliente = this.clientes.find(c => parseInt(c.id) === parseInt(res.id_clientes));
+        const nombreCliente = cliente ? (cliente.apellido + ', ' + cliente.nombre) : 'Sin cliente';
+        block.innerHTML = '<div class="res-name">' + nombreCliente + '</div><div class="res-monto">$' + (parseFloat(res.precio_total) || 0).toLocaleString('es-AR') + '</div>';
+        block.title = nombreCliente + ' | $' + (parseFloat(res.precio_total) || 0).toLocaleString('es-AR') + ' | ' + this.getReservaEstadoPago(res.id, res.precio_total) + ' | Entra: ' + res.fecha_entrada + ' | Sale: ' + res.fecha_salida;
+
+        block.dataset.reservaId = res.id;
+        block.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const rid = e.currentTarget.dataset.reservaId;
+          const reserva = this.reservas.find(r => String(r.id) === String(rid));
+          if (reserva) this.openModal(reserva);
+        });
+
+        row.appendChild(block);
+      });
+      grid.appendChild(row);
+    });
+    this.updateHeaderMonth();
+  },
+
+  handleCellClick(e, dateStr, cabanaId) {
+    e.target.classList.add('cell-tap');
+    setTimeout(() => e.target.classList.remove('cell-tap'), 250);
+    this.openModal(null, dateStr, cabanaId);
+  },
+
+  openModal(reserva, dateStr, cabanaId) {
+    this.editingId = reserva ? reserva.id : null;
+    document.getElementById('modal-title').textContent = reserva ? 'Editar Reserva' : 'Nueva Reserva';
+    document.getElementById('r-id').value = reserva ? reserva.id : '';
+    document.getElementById('r-cabana').value = reserva ? reserva.id_cabanas : (cabanaId || '');
+    document.getElementById('r-cliente').value = reserva ? reserva.id_clientes : '';
+    document.getElementById('r-inicio').value = reserva ? reserva.fecha_entrada : (dateStr || '');
+    document.getElementById('r-fin').value = reserva ? reserva.fecha_salida : (dateStr || '');
+    document.getElementById('r-huespedes').value = reserva ? (reserva.cant_huespedes || 1) : 1;
+    document.getElementById('r-origen').value = reserva ? (reserva.origen || 'manual') : 'manual';
+    document.getElementById('r-monto').value = reserva ? reserva.precio_total : '';
+    document.getElementById('r-notas').value = reserva ? (reserva.observaciones || '') : '';
+    document.getElementById('btn-eliminar').style.display = reserva ? 'block' : 'none';
+
+    // Mostrar/ocultar sección de pagos
+    const pagosSection = document.getElementById('r-pagos-section');
+    if (reserva) {
+      pagosSection.style.display = 'block';
+      this.renderPagosEnModal(reserva.id, reserva.precio_total);
+    } else {
+      pagosSection.style.display = 'none';
+    }
+
+    if (!reserva && dateStr && cabanaId) this.calcularMonto();
+    document.getElementById('modal').classList.add('active');
+  },
+
+  closeModal() { 
+    document.getElementById('modal').classList.remove('active'); 
+    this.editingId = null; 
+    document.getElementById('r-pagos-section').style.display = 'none';
+  },
+
+  renderPagosEnModal(reservaId, precioTotal) {
+    const pagosRes = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(reservaId));
+    const totalPagado = pagosRes.reduce((s, p) => s + (parseFloat(p.importe) || 0), 0);
+    const saldo = parseFloat(precioTotal || 0) - totalPagado;
+
+    document.getElementById('r-total-pagado').textContent = '$' + totalPagado.toLocaleString('es-AR');
+    document.getElementById('r-saldo-pendiente').textContent = '$' + Math.max(0, saldo).toLocaleString('es-AR');
+
+    const badge = document.getElementById('r-estado-pago-badge');
+    if (totalPagado >= parseFloat(precioTotal || 0)) {
+      badge.textContent = 'Pagado'; badge.style.background = '#22c55e';
+    } else if (totalPagado > 0) {
+      badge.textContent = 'Con seña'; badge.style.background = '#f59e0b';
+    } else {
+      badge.textContent = 'Sin seña'; badge.style.background = '#ef4444';
+    }
+
+    const lista = document.getElementById('r-lista-pagos');
+    if (pagosRes.length === 0) {
+      lista.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:4px;">Sin pagos registrados</div>';
+    } else {
+      let html = '<table style="width:100%;border-collapse:collapse;">';
+      pagosRes.sort((a,b) => new Date(a.fecha) - new Date(b.fecha)).forEach(p => {
+        html += '<tr style="border-bottom:1px solid #f1f5f9;">';
+        html += '<td style="padding:4px 0;color:#64748b;">' + this.esc(p.fecha) + '</td>';
+        html += '<td style="padding:4px 0;font-weight:600;color:#16a34a;text-align:right;">$' + parseFloat(p.importe).toLocaleString('es-AR') + '</td>';
+        html += '<td style="padding:4px 0;color:#94a3b8;text-align:right;font-size:0.7rem;">' + this.esc(p.metodo || '-') + '</td>';
+        html += '</tr>';
+      });
+      html += '</table>';
+      lista.innerHTML = html;
+    }
+
+    // Setear fecha de hoy en el campo de nuevo pago
+    document.getElementById('r-nuevo-pago-fecha').value = this.fmt(new Date());
+    document.getElementById('r-nuevo-pago-monto').value = '';
+    document.getElementById('r-nuevo-pago-notas').value = '';
+  },
+
+  async agregarPagoDesdeReserva() {
+    if (!this.editingId) return;
+    const monto = parseFloat(document.getElementById('r-nuevo-pago-monto').value) || 0;
+    const fecha = document.getElementById('r-nuevo-pago-fecha').value;
+    const metodo = document.getElementById('r-nuevo-pago-metodo').value;
+    const notas = document.getElementById('r-nuevo-pago-notas').value;
+
+    if (monto <= 0 || !fecha) {
+      this.showToast('Ingrese importe y fecha', 'error'); return;
+    }
+
+    const data = { id_reserva: this.editingId, importe: monto, fecha: fecha, metodo: metodo, notas: notas };
+    const result = await this.apiPost('create', 'pagos', null, data);
+
+    if (result.success || result.id) {
+      await this.loadAllData();
+      const reserva = this.reservas.find(r => String(r.id) === String(this.editingId));
+      if (reserva) this.renderPagosEnModal(reserva.id, reserva.precio_total);
+      this.render();
+      this.showToast('Pago agregado', 'success');
+    } else {
+      this.showToast('Error al agregar pago', 'error');
+    }
+  },
+
+  calcularMonto() {
+    const cabId = parseInt(document.getElementById('r-cabana').value);
+    const inicio = document.getElementById('r-inicio').value;
+    const fin = document.getElementById('r-fin').value;
+    const huespedes = parseInt(document.getElementById('r-huespedes').value) || 1;
+    if (!cabId || !inicio || !fin) return;
+    const d1 = new Date(inicio + 'T00:00:00'); const d2 = new Date(fin + 'T00:00:00');
+    const noches = Math.max(0, Math.round((d2 - d1) / (1000 * 60 * 60 * 24)));
+    if (noches <= 0) return;
+    const preciosCab = this.precios.filter(p => parseInt(p.id_cabanas) === cabId);
+    let precioAplicable = null;
+    for (const p of preciosCab) {
+      const vigDesde = new Date(p.vigencia_desde + 'T00:00:00');
+      const vigHasta = p.vigencia_hasta ? new Date(p.vigencia_hasta + 'T00:00:00') : new Date('2099-12-31');
+      if (d1 >= vigDesde && d1 <= vigHasta) { precioAplicable = p; }
+    }
+    if (!precioAplicable && preciosCab.length > 0) {
+      precioAplicable = preciosCab.sort((a, b) => new Date(b.vigencia_desde) - new Date(a.vigencia_desde))[0];
+    }
+    if (precioAplicable) {
+      let monto = 0;
+      if (precioAplicable.precio_pax && parseFloat(precioAplicable.precio_pax) > 0) {
+        monto = noches * parseFloat(precioAplicable.precio_pax) * huespedes;
+      } else {
+        monto = noches * parseFloat(precioAplicable.precio_noche || 0);
+      }
+      if (monto > 0) document.getElementById('r-monto').value = Math.round(monto);
+    }
+  },
+
+  async saveReserva() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const cabId = parseInt(document.getElementById('r-cabana').value);
+    const cliId = parseInt(document.getElementById('r-cliente').value);
+    const inicio = document.getElementById('r-inicio').value;
+    const fin = document.getElementById('r-fin').value;
+    const huespedes = parseInt(document.getElementById('r-huespedes').value) || 1;
+    const origen = document.getElementById('r-origen').value;
+    const monto = parseInt(document.getElementById('r-monto').value) || 0;
+    const notas = document.getElementById('r-notas').value;
+    if (!cabId || !cliId || !inicio || !fin) { this.showToast('Complete los campos obligatorios', 'error'); return; }
+    const d1 = new Date(inicio + 'T00:00:00'); const d2 = new Date(fin + 'T00:00:00');
+    if (d2 <= d1) { this.showToast('La salida debe ser posterior a la entrada', 'error'); return; }
+    const noches = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+    const preciosCab = this.precios.filter(p => parseInt(p.id_cabanas) === cabId);
+    let idPrecio = null;
+    for (const p of preciosCab) {
+      const vigDesde = new Date(p.vigencia_desde + 'T00:00:00');
+      const vigHasta = p.vigencia_hasta ? new Date(p.vigencia_hasta + 'T00:00:00') : new Date('2099-12-31');
+      if (d1 >= vigDesde && d1 <= vigHasta) { idPrecio = p.id; }
+    }
+    if (!idPrecio && preciosCab.length > 0) { idPrecio = preciosCab.sort((a, b) => new Date(b.vigencia_desde) - new Date(a.vigencia_desde))[0].id; }
+    const overlap = this.reservas.find(r => {
+      if (r.estado === 'cancelada') return false;
+      if (this.editingId && parseInt(r.id) === parseInt(this.editingId)) return false;
+      if (parseInt(r.id_cabanas) !== cabId) return false;
+      const r1 = new Date(r.fecha_entrada + 'T00:00:00'); const r2 = new Date(r.fecha_salida + 'T00:00:00');
+      return d1 < r2 && d2 > r1;
+    });
+    if (overlap) { this.showToast('Ya existe una reserva en esas fechas', 'error'); return; }
+    const data = { id_cabanas: cabId, id_clientes: cliId, id_precios: idPrecio || '', cant_huespedes: huespedes, fecha_entrada: inicio, fecha_salida: fin, cant_noches: noches, precio_total: monto, estado: 'activa', observaciones: notas, origen: origen };
+    let result;
+    if (this.editingId) { result = await this.apiPost('update', 'reservas', this.editingId, data); }
+    else { result = await this.apiPost('create', 'reservas', null, data); }
+    if (result.success || result.id) {
+      await this.loadAllData(); this.populateSelects(); this.refreshCurrentScreen(); this.closeModal();
+      this.showToast(this.editingId ? 'Reserva actualizada' : 'Reserva creada' + (sena > 0 ? ' con seña' : ''), 'success');
+    } else { this.showToast('Error al guardar: ' + (result.error || 'desconocido'), 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  async deleteReserva() {
+    if (!this.editingId) return;
+    if (!confirm('Eliminar esta reserva?')) return;
+    const result = await this.apiPost('delete', 'reservas', this.editingId, null);
+    if (result.success) { await this.loadAllData(); this.render(); this.closeModal(); this.showToast('Reserva eliminada', 'success'); }
+    else { this.showToast('Error al eliminar', 'error'); }
+  },
+
+  openCabanaModal(cabana) {
+    this.editingCabanaId = cabana ? cabana.id : null;
+    document.getElementById('modal-cabana-title').textContent = cabana ? 'Editar Cabana' : 'Nueva Cabana';
+    document.getElementById('c-id').value = cabana ? cabana.id : '';
+    document.getElementById('c-nombre').value = cabana ? cabana.nombre : '';
+    document.getElementById('c-maxpax').value = cabana ? cabana.maximo_pax : '';
+    document.getElementById('c-color').value = cabana ? (cabana.color || '#10b981') : '#10b981';
+    document.getElementById('c-comodidades').value = cabana ? (cabana.comodidades || '') : '';
+    document.getElementById('c-servicios').value = cabana ? (cabana.servicios || '') : '';
+    document.getElementById('btn-eliminar-cabana').style.display = cabana ? 'block' : 'none';
+    document.getElementById('modal-cabana').classList.add('active');
+  },
+
+  closeCabanaModal() { document.getElementById('modal-cabana').classList.remove('active'); this.editingCabanaId = null; },
+
+  async saveCabana() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const nombre = document.getElementById('c-nombre').value.trim();
+    const maxpax = parseInt(document.getElementById('c-maxpax').value) || 0;
+    const color = document.getElementById('c-color').value;
+    const comodidades = document.getElementById('c-comodidades').value;
+    const servicios = document.getElementById('c-servicios').value;
+    if (!nombre || maxpax <= 0) { this.showToast('Complete nombre y maximo de pax', 'error'); return; }
+    const data = { nombre: nombre, maximo_pax: maxpax, color: color, comodidades: comodidades, servicios: servicios, estado: 'activa' };
+    let result;
+    if (this.editingCabanaId) { result = await this.apiPost('update', 'cabanas', this.editingCabanaId, data); }
+    else { result = await this.apiPost('create', 'cabanas', null, data); }
+    if (result.success || result.id) { await this.loadAllData(); this.populateSelects(); this.refreshCurrentScreen(); this.closeCabanaModal(); this.showToast(this.editingCabanaId ? 'Cabana actualizada' : 'Cabana creada', 'success'); }
+    else { this.showToast('Error al guardar', 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  async deleteCabana() {
+    if (!this.editingCabanaId) return;
+    const hasReservas = this.reservas.some(r => parseInt(r.id_cabanas) === parseInt(this.editingCabanaId));
+    if (hasReservas) { this.showToast('No se puede eliminar: tiene reservas asociadas', 'error'); return; }
+    if (!confirm('Eliminar esta cabana?')) return;
+    const result = await this.apiPost('delete', 'cabanas', this.editingCabanaId, null);
+    if (result.success) { await this.loadAllData(); this.populateSelects(); this.render(); this.closeCabanaModal(); this.showToast('Cabana eliminada', 'success'); }
+    else { this.showToast('Error al eliminar', 'error'); }
+  },
+
+  openClienteModal(cliente) {
+    this.editingClienteId = cliente ? cliente.id : null;
+    document.getElementById('modal-cliente-title').textContent = cliente ? 'Editar Cliente' : 'Nuevo Cliente';
+    document.getElementById('cl-id').value = cliente ? cliente.id : '';
+    document.getElementById('cl-nombre').value = cliente ? cliente.nombre : '';
+    document.getElementById('cl-apellido').value = cliente ? cliente.apellido : '';
+    document.getElementById('cl-telefono').value = cliente ? (cliente.telefono || '') : '';
+    document.getElementById('cl-email').value = cliente ? (cliente.email || '') : '';
+    document.getElementById('cl-dni').value = cliente ? (cliente.dni || '') : '';
+    document.getElementById('cl-notas').value = cliente ? (cliente.notas || '') : '';
+    document.getElementById('btn-eliminar-cliente').style.display = cliente ? 'block' : 'none';
+    document.getElementById('modal-cliente').classList.add('active');
+  },
+
+  closeClienteModal() { document.getElementById('modal-cliente').classList.remove('active'); this.editingClienteId = null; },
+
+  async saveCliente() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const nombre = document.getElementById('cl-nombre').value.trim();
+    const apellido = document.getElementById('cl-apellido').value.trim();
+    if (!nombre || !apellido) { this.showToast('Complete nombre y apellido', 'error'); return; }
+    const data = { nombre: nombre, apellido: apellido, telefono: document.getElementById('cl-telefono').value, email: document.getElementById('cl-email').value, dni: document.getElementById('cl-dni').value, notas: document.getElementById('cl-notas').value };
+    let result;
+    if (this.editingClienteId) { result = await this.apiPost('update', 'clientes', this.editingClienteId, data); }
+    else { result = await this.apiPost('create', 'clientes', null, data); }
+    if (result.success || result.id) { await this.loadAllData(); this.populateSelects(); this.renderClientes(); this.closeClienteModal(); this.showToast(this.editingClienteId ? 'Cliente actualizado' : 'Cliente creado', 'success'); }
+    else { this.showToast('Error al guardar', 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  async deleteCliente() {
+    if (!this.editingClienteId) return;
+    const hasReservas = this.reservas.some(r => parseInt(r.id_clientes) === parseInt(this.editingClienteId));
+    if (hasReservas) { this.showToast('No se puede eliminar: tiene reservas asociadas', 'error'); return; }
+    if (!confirm('Eliminar este cliente?')) return;
+    const result = await this.apiPost('delete', 'clientes', this.editingClienteId, null);
+    if (result.success) { await this.loadAllData(); this.populateSelects(); this.renderClientes(); this.closeClienteModal(); this.showToast('Cliente eliminado', 'success'); }
+    else { this.showToast('Error al eliminar', 'error'); }
+  },
+
+  openNuevoClienteInline() {
+    document.getElementById('ncl-nombre').value = '';
+    document.getElementById('ncl-apellido').value = '';
+    document.getElementById('ncl-telefono').value = '';
+    document.getElementById('ncl-email').value = '';
+    document.getElementById('ncl-dni').value = '';
+    document.getElementById('modal-nuevo-cliente-inline').classList.add('active');
+  },
+
+  closeNuevoClienteInline() { document.getElementById('modal-nuevo-cliente-inline').classList.remove('active'); },
+
+  async saveNuevoClienteInline() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const data = { nombre: document.getElementById('ncl-nombre').value.trim(), apellido: document.getElementById('ncl-apellido').value.trim(), telefono: document.getElementById('ncl-telefono').value, email: document.getElementById('ncl-email').value, dni: document.getElementById('ncl-dni').value, notas: '' };
+    if (!data.nombre || !data.apellido) { this.showToast('Complete nombre y apellido', 'error'); return; }
+    const result = await this.apiPost('create', 'clientes', null, data);
+    if (result.success || result.id) {
+      await this.loadAllData(); this.populateSelects();
+      const newId = result.id || (this.clientes.length > 0 ? this.clientes[this.clientes.length - 1].id : null);
+      if (newId) document.getElementById('r-cliente').value = newId;
+      this.closeNuevoClienteInline(); this.showToast('Cliente creado y seleccionado', 'success');
+    } else { this.showToast('Error al crear cliente', 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  openPrecioModal(precio) {
+    this.editingPrecioId = precio ? precio.id : null;
+    document.getElementById('modal-precio-title').textContent = precio ? 'Editar Precio' : 'Nuevo Precio';
+    document.getElementById('p-id').value = precio ? precio.id : '';
+    document.getElementById('p-cabana').value = precio ? precio.id_cabanas : '';
+    document.getElementById('p-precio-noche').value = precio ? (precio.precio_noche || '') : '';
+    document.getElementById('p-precio-pax').value = precio ? (precio.precio_pax || '') : '';
+    document.getElementById('p-vigencia-desde').value = precio ? precio.vigencia_desde : '';
+    document.getElementById('p-vigencia-hasta').value = precio ? (precio.vigencia_hasta || '') : '';
+    document.getElementById('btn-eliminar-precio').style.display = precio ? 'block' : 'none';
+    document.getElementById('modal-precio').classList.add('active');
+  },
+
+  closePrecioModal() { document.getElementById('modal-precio').classList.remove('active'); this.editingPrecioId = null; },
+
+  async savePrecio() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const cabId = parseInt(document.getElementById('p-cabana').value);
+    const precioNoche = parseFloat(document.getElementById('p-precio-noche').value) || 0;
+    const precioPax = parseFloat(document.getElementById('p-precio-pax').value) || 0;
+    const vigDesde = document.getElementById('p-vigencia-desde').value;
+    const vigHasta = document.getElementById('p-vigencia-hasta').value;
+    if (!cabId || !vigDesde) { this.showToast('Complete cabana y vigencia', 'error'); return; }
+    if (precioNoche <= 0 && precioPax <= 0) { this.showToast('Ingrese al menos un precio', 'error'); return; }
+    const data = { id_cabanas: cabId, precio_noche: precioNoche, precio_pax: precioPax, vigencia_desde: vigDesde, vigencia_hasta: vigHasta || '' };
+    let result;
+    if (this.editingPrecioId) { result = await this.apiPost('update', 'precios', this.editingPrecioId, data); }
+    else { result = await this.apiPost('create', 'precios', null, data); }
+    if (result.success || result.id) { await this.loadAllData(); this.renderPrecios(); this.closePrecioModal(); this.showToast(this.editingPrecioId ? 'Precio actualizado' : 'Precio creado', 'success'); }
+    else { this.showToast('Error al guardar', 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  async deletePrecio() {
+    if (!this.editingPrecioId) return;
+    if (!confirm('Eliminar este precio?')) return;
+    const result = await this.apiPost('delete', 'precios', this.editingPrecioId, null);
+    if (result.success) { await this.loadAllData(); this.renderPrecios(); this.closePrecioModal(); this.showToast('Precio eliminado', 'success'); }
+    else { this.showToast('Error al eliminar', 'error'); }
+  },
+
+  openPagoModal(pago) {
+    this.editingPagoId = pago ? pago.id : null;
+    document.getElementById('modal-pago-title').textContent = pago ? 'Editar Pago' : 'Nuevo Pago';
+    document.getElementById('pg-id').value = pago ? pago.id : '';
+    document.getElementById('pg-reserva').value = pago ? pago.id_reserva : '';
+    document.getElementById('pg-importe').value = pago ? pago.importe : '';
+    document.getElementById('pg-fecha').value = pago ? pago.fecha : this.fmt(new Date());
+    document.getElementById('pg-metodo').value = pago ? (pago.metodo || 'efectivo') : 'efectivo';
+    document.getElementById('pg-notas').value = pago ? (pago.notas || '') : '';
+    document.getElementById('btn-eliminar-pago').style.display = pago ? 'block' : 'none';
+    document.getElementById('modal-pago').classList.add('active');
+  },
+
+  closePagoModal() { document.getElementById('modal-pago').classList.remove('active'); this.editingPagoId = null; },
+
+  async savePago() {
+    if (this.saving) return;
+    this.setLoading(true);
+    try {
+    const resId = parseInt(document.getElementById('pg-reserva').value);
+    const importe = parseFloat(document.getElementById('pg-importe').value) || 0;
+    const fecha = document.getElementById('pg-fecha').value;
+    const metodo = document.getElementById('pg-metodo').value;
+    const notas = document.getElementById('pg-notas').value;
+    if (!resId || importe <= 0 || !fecha) { this.showToast('Complete todos los campos obligatorios', 'error'); return; }
+    const data = { id_reserva: resId, importe: importe, fecha: fecha, metodo: metodo, notas: notas };
+    let result;
+    if (this.editingPagoId) { result = await this.apiPost('update', 'pagos', this.editingPagoId, data); }
+    else { result = await this.apiPost('create', 'pagos', null, data); }
+    if (result.success || result.id) { await this.loadAllData(); this.render(); this.renderPagos(); this.closePagoModal(); this.showToast(this.editingPagoId ? 'Pago actualizado' : 'Pago registrado', 'success'); }
+    else { this.showToast('Error al guardar', 'error'); }
+    } finally { this.setLoading(false); }
+  },
+
+  async deletePago() {
+    if (!this.editingPagoId) return;
+    if (!confirm('Eliminar este pago?')) return;
+    const result = await this.apiPost('delete', 'pagos', this.editingPagoId, null);
+    if (result.success) { await this.loadAllData(); this.render(); this.renderPagos(); this.closePagoModal(); this.showToast('Pago eliminado', 'success'); }
+    else { this.showToast('Error al eliminar', 'error'); }
+  },
+
+  renderClientes() {
+    const container = document.getElementById('clientes-list');
+    const search = (document.getElementById('search-clientes')?.value || '').toLowerCase();
+    let list = this.clientes;
+    if (search) {
+      list = list.filter(c => (c.nombre + ' ' + c.apellido + ' ' + c.telefono + ' ' + c.email + ' ' + c.dni).toLowerCase().includes(search));
+    }
+    list = list.sort((a, b) => (a.apellido + a.nombre).localeCompare(b.apellido + b.nombre));
+    if (list.length === 0) { container.innerHTML = '<div style="padding:24px;text-align:center;color:#94a3b8;font-size:0.85rem;">No hay clientes</div>'; return; }
+    let html = '<table class="crud-table"><thead><tr><th>Cliente</th><th>Contacto</th><th>DNI</th></tr></thead><tbody>';
+    list.forEach(c => {
+      html += '<tr onclick="app.openClienteModal(app.clientes.find(x => x.id == ' + c.id + '))" style="cursor:pointer;">';
+      html += '<td><div style="font-weight:600;">' + this.esc(c.apellido) + ', ' + this.esc(c.nombre) + '</div></td>';
+      html += '<td><div style="font-size:0.75rem;color:#64748b;">' + this.esc(c.telefono || '-') + '<br>' + this.esc(c.email || '-') + '</div></td>';
+      html += '<td style="font-size:0.75rem;color:#64748b;">' + this.esc(c.dni || '-') + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  },
+
+  renderCabanas() {
+    const container = document.getElementById('cabanas-list');
+    const list = this.cabanas.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    if (list.length === 0) { container.innerHTML = '<div style="padding:24px;text-align:center;color:#94a3b8;font-size:0.85rem;">No hay cabanas</div>'; return; }
+    let html = '<table class="crud-table"><thead><tr><th>Cabana</th><th>Cap.</th><th>Comodidades</th></tr></thead><tbody>';
+    list.forEach(c => {
+      const color = c.color || '#6366f1';
+      html += '<tr onclick="app.openCabanaModal(app.cabanas.find(x => x.id == ' + c.id + '))" style="cursor:pointer;">';
+      html += '<td><div style="display:flex;align-items:center;gap:8px;"><span style="width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;"></span><span style="font-weight:600;">' + this.esc(c.nombre) + '</span></div></td>';
+      html += '<td style="font-size:0.8rem;">' + (c.maximo_pax || '-') + ' pax</td>';
+      html += '<td style="font-size:0.75rem;color:#64748b;">' + this.esc(c.comodidades || '-') + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  },
+
+  renderPrecios() {
+    const container = document.getElementById('precios-list');
+    const list = this.precios.sort((a, b) => new Date(b.vigencia_desde) - new Date(a.vigencia_desde));
+    if (list.length === 0) { container.innerHTML = '<div style="padding:24px;text-align:center;color:#94a3b8;font-size:0.85rem;">No hay precios cargados</div>'; return; }
+    let html = '<table class="crud-table"><thead><tr><th>Cabana</th><th>Precio</th><th>Vigencia</th></tr></thead><tbody>';
+    list.forEach(p => {
+      const cab = this.cabanas.find(c => parseInt(c.id) === parseInt(p.id_cabanas));
+      html += '<tr onclick="app.openPrecioModal(app.precios.find(x => x.id == ' + p.id + '))" style="cursor:pointer;">';
+      html += '<td><span style="font-weight:600;">' + this.esc(cab ? cab.nombre : '?') + '</span></td>';
+      html += '<td style="font-size:0.8rem;">';
+      if (parseFloat(p.precio_noche) > 0) html += '$' + parseFloat(p.precio_noche).toLocaleString('es-AR') + '/noche<br>';
+      if (parseFloat(p.precio_pax) > 0) html += '$' + parseFloat(p.precio_pax).toLocaleString('es-AR') + '/pax';
+      html += '</td>';
+      html += '<td style="font-size:0.75rem;color:#64748b;">' + this.esc(p.vigencia_desde) + ' al ' + this.esc(p.vigencia_hasta || 'sin fin') + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  },
+
+  renderPagos() {
+    const container = document.getElementById('pagos-list');
+    const list = this.pagos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    if (list.length === 0) { container.innerHTML = '<div style="padding:24px;text-align:center;color:#94a3b8;font-size:0.85rem;">No hay pagos registrados</div>'; return; }
+    let html = '<table class="crud-table"><thead><tr><th>Reserva</th><th>Importe</th><th>Fecha / Metodo</th></tr></thead><tbody>';
+    list.forEach(pg => {
+      const res = this.reservas.find(r => parseInt(r.id) === parseInt(pg.id_reserva));
+      const cli = res ? this.clientes.find(c => parseInt(c.id) === parseInt(res.id_clientes)) : null;
+      const cab = res ? this.cabanas.find(c => parseInt(c.id) === parseInt(res.id_cabanas)) : null;
+      html += '<tr onclick="app.openPagoModal(app.pagos.find(x => x.id == ' + pg.id + '))" style="cursor:pointer;">';
+      html += '<td><div style="font-weight:600;font-size:0.8rem;">' + this.esc(cab ? cab.nombre : '?') + '</div><div style="font-size:0.7rem;color:#64748b;">' + this.esc(cli ? cli.apellido + ', ' + cli.nombre : '?') + '</div></td>';
+      html += '<td style="font-weight:700;color:#16a34a;font-size:0.9rem;">$' + parseFloat(pg.importe).toLocaleString('es-AR') + '</td>';
+      html += '<td style="font-size:0.75rem;color:#64748b;">' + this.esc(pg.fecha) + '<br>' + this.esc(pg.metodo || '-') + '</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  },
+
+  filterClientes() { this.renderClientes(); },
+
+  renderResumen() {
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const totalCab = this.cabanas.filter(c => c.estado !== 'inactiva').length;
+
+    // --- Ocupación hoy ---
+    const activasHoy = this.reservas.filter(r => {
+      if (r.estado === 'cancelada') return false;
+      const ent = new Date(r.fecha_entrada + 'T00:00:00');
+      const sal = new Date(r.fecha_salida + 'T00:00:00');
+      return ent <= hoy && sal > hoy;
+    });
+    const pct = totalCab > 0 ? Math.round((activasHoy.length / totalCab) * 100) : 0;
+    document.getElementById('res-ocupacion').textContent = pct + '%';
+    document.getElementById('res-ocupacion-sub').textContent = activasHoy.length + ' de ' + totalCab + ' cabañas';
+
+    // --- Ingresos del mes ---
+    const pagosMes = this.pagos.filter(p => {
+      const f = new Date(p.fecha + 'T00:00:00');
+      return f.getMonth() === hoy.getMonth() && f.getFullYear() === hoy.getFullYear();
+    });
+    const totalIngresos = pagosMes.reduce((s, p) => s + (parseFloat(p.importe) || 0), 0);
+    document.getElementById('res-ingresos').textContent = '$' + totalIngresos.toLocaleString('es-AR');
+    document.getElementById('res-ingresos-sub').textContent = pagosMes.length + ' pagos';
+
+    // --- Próximas entradas (7 días) ---
+    const prox7 = new Date(hoy); prox7.setDate(hoy.getDate() + 7);
+    const entradas = this.reservas.filter(r => {
+      if (r.estado === 'cancelada') return false;
+      const ent = new Date(r.fecha_entrada + 'T00:00:00');
+      return ent >= hoy && ent <= prox7;
+    }).sort((a, b) => new Date(a.fecha_entrada) - new Date(b.fecha_entrada));
+    document.getElementById('res-entradas-count').textContent = entradas.length;
+    document.getElementById('res-entradas-list').innerHTML = this._renderResumenLista(entradas, 'entrada');
+
+    // --- Salidas de hoy ---
+    const salidasHoy = this.reservas.filter(r => {
+      if (r.estado === 'cancelada') return false;
+      const sal = new Date(r.fecha_salida + 'T00:00:00');
+      return sal.getTime() === hoy.getTime();
+    }).sort((a, b) => new Date(a.fecha_entrada) - new Date(b.fecha_entrada));
+    document.getElementById('res-salidas-list').innerHTML = salidasHoy.length
+      ? this._renderResumenLista(salidasHoy, 'salida')
+      : '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.8rem;">Sin salidas hoy</div>';
+
+    // --- Pagos pendientes ---
+    const pendientes = this.reservas.filter(r => {
+      if (r.estado === 'cancelada') return false;
+      const pagosRes = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(r.id));
+      const totalPagado = pagosRes.reduce((s, p) => s + (parseFloat(p.importe) || 0), 0);
+      return totalPagado < parseFloat(r.precio_total || 0);
+    }).sort((a, b) => new Date(a.fecha_entrada) - new Date(b.fecha_entrada));
+    document.getElementById('res-pendientes-count').textContent = pendientes.length;
+    document.getElementById('res-pendientes-list').innerHTML = pendientes.length
+      ? this._renderResumenLista(pendientes, 'pendiente')
+      : '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:0.8rem;">Todo al día</div>';
+  },
+
+  _renderResumenLista(lista, tipo) {
+    if (!lista.length) return '';
+    let html = '';
+    lista.forEach(r => {
+      const cli = this.clientes.find(c => parseInt(c.id) === parseInt(r.id_clientes));
+      const cab = this.cabanas.find(c => parseInt(c.id) === parseInt(r.id_cabanas));
+      const nombre = cli ? (cli.apellido + ', ' + cli.nombre) : 'Sin cliente';
+      const cabana = cab ? cab.nombre : 'Cabaña ?';
+      const fecha = tipo === 'salida' ? r.fecha_salida : r.fecha_entrada;
+      const pax = (r.cant_huespedes || '-') + ' pax';
+      let estado = '';
+      if (tipo === 'pendiente') {
+        const pagosRes = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(r.id));
+        const totalPagado = pagosRes.reduce((s, p) => s + (parseFloat(p.importe) || 0), 0);
+        if (totalPagado <= 0) estado = '<span style="color:#ef4444;font-weight:600;font-size:0.65rem;">Sin seña</span>';
+        else estado = '<span style="color:#f59e0b;font-weight:600;font-size:0.65rem;">Falta $' + (parseFloat(r.precio_total) - totalPagado).toLocaleString('es-AR') + '</span>';
+      } else {
+        const pagosRes = this.pagos.filter(p => parseInt(p.id_reserva) === parseInt(r.id));
+        const totalPagado = pagosRes.reduce((s, p) => s + (parseFloat(p.importe) || 0), 0);
+        if (totalPagado >= parseFloat(r.precio_total || 0)) estado = '<span style="color:#22c55e;font-weight:600;font-size:0.65rem;">Pagado</span>';
+        else if (totalPagado > 0) estado = '<span style="color:#f59e0b;font-weight:600;font-size:0.65rem;">Con seña</span>';
+        else estado = '<span style="color:#ef4444;font-weight:600;font-size:0.65rem;">Sin seña</span>';
+      }
+      html += '<div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="app.openModal(app.reservas.find(x => x.id == ' + r.id + '))">';
+      html += '<div><div style="font-weight:600;font-size:0.8rem;color:#334155;">' + this.esc(nombre) + '</div><div style="font-size:0.7rem;color:#64748b;">' + this.esc(cabana) + ' · ' + pax + '</div></div>';
+      html += '<div style="text-align:right;"><div style="font-weight:700;font-size:0.8rem;color:#334155;">' + this.esc(fecha) + '</div>' + estado + '</div>';
+      html += '</div>';
+    });
+    return html;
+  },
+
+  showConfigModal() {
+    document.getElementById('config-url-oculto').value = API_URL;
+    document.getElementById('modal-config-api').classList.add('active');
+  },
+  closeConfigModal() {
+    document.getElementById('modal-config-api').classList.remove('active');
+  },
+  saveConfigOculto() {
+    const url = document.getElementById('config-url-oculto').value.trim();
+    if (!url || !url.includes('script.google.com')) {
+      document.getElementById('config-error-oculto').textContent = 'Ingresa una URL valida de Apps Script.';
+      document.getElementById('config-error-oculto').style.display = 'block'; return;
+    }
+    localStorage.setItem('larustica_api_url', url); API_URL = url;
+    document.getElementById('config-error-oculto').style.display = 'none';
+    this.closeConfigModal();
+    this.showToast('URL actualizada', 'success');
+    this.loadAllData().then(() => { this.refreshCurrentScreen(); });
+  },
+
+  esc(str) {
+    if (!str) return '';
+    return str.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  },
+
+  showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+};
+
+// Registrar Service Worker para PWA (offline)
+if ('serviceWorker' in navigator) {
+  const swCode = `self.addEventListener('install',e=>{e.waitUntil(caches.open('larustica-v1').then(c=>c.add('.')));self.skipWaiting()});self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode],{type:'application/javascript'})));
+}
+app.init();
+</script>
+</body>
+</html>
