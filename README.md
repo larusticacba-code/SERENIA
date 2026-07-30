@@ -1,2 +1,2 @@
-# SETENIA
+# SERENIA
 Sistema de Administración de Alojamientos
